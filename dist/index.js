@@ -2764,13 +2764,26 @@ function SolidChart(props) {
   const [canvas, setCanvas] = createSignal$1(null);
   const [chart, setChart] = createSignal$1(null);
   createEffect$1(() => {
+    console.log("solid chart js")
     const el = canvas();
     if (!el) return;
 
     const _chart = chart();
-
+    
+    
     if (!_chart) {
-      setChart(new Chart(el, deepClone(props)));
+      setChart(new Chart(el, {...deepClone(props), plugins: [
+        {
+          id: 'custom_canvas_background_color',
+          // @ts-ignore
+          beforeDraw: function (c) {
+            console.log('before draw')
+            const ctx = c.chart.ctx
+            ctx.fillStyle = 'rgba(100,100,100,1)'
+            ctx.fillRect(0, 0, 100, 100)
+          },
+        },
+      ],}));
       return;
     }
 
